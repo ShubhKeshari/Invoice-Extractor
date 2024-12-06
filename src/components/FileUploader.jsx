@@ -11,11 +11,9 @@ const FileUploader = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  //const endpoint = "https://shubh-keshari.cognitiveservices.azure.com/";
-  const endpoint = "https://shubh-form-recogniser.cognitiveservices.azure.com/";
-  // const apiKey =
-  //   "2ncLPv0gkd7xEsh714VeFKdoQza9KApEhAnettIP40i6YnsY1jAjJQQJ99AKACYeBjFXJ3w3AAALACOGaNSH";
-  const apiKey = "Ebfgh8CrZjY9floKkYN59uBZ57z5WBbhN5RT2Z6SGwPFoeM6Ob3UJQQJ99ALACYeBjFXJ3w3AAALACOGpSJI"
+  const endpoint = "https://shubh-keshari.cognitiveservices.azure.com/";
+  const apiKey =
+    "2ncLPv0gkd7xEsh714VeFKdoQza9KApEhAnettIP40i6YnsY1jAjJQQJ99AKACYeBjFXJ3w3AAALACOGaNSH";
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
@@ -40,7 +38,6 @@ const FileUploader = () => {
 
       if (result.documents && result.documents.length > 0) {
         const invoice = result.documents[0].fields;
-        console.log(invoice);
         const data = {
           invoiceNumber: invoice["InvoiceId"]?.value || "N/A",
           invoiceDate: invoice["InvoiceDate"]?.value
