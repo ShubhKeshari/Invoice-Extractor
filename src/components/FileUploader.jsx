@@ -11,10 +11,11 @@ const FileUploader = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const endpoint = "https://shubh-keshari.cognitiveservices.azure.com/";
-  const apiKey =
-    "2ncLPv0gkd7xEsh714VeFKdoQza9KApEhAnettIP40i6YnsY1jAjJQQJ99AKACYeBjFXJ3w3AAALACOGaNSH";
-
+  //const endpoint = "https://shubh-keshari.cognitiveservices.azure.com/";
+  const endpoint = "https://shubh-form-recogniser.cognitiveservices.azure.com/";
+  // const apiKey =
+  //   "2ncLPv0gkd7xEsh714VeFKdoQza9KApEhAnettIP40i6YnsY1jAjJQQJ99AKACYeBjFXJ3w3AAALACOGaNSH";
+  const apiKey = "Ebfgh8CrZjY9floKkYN59uBZ57z5WBbhN5RT2Z6SGwPFoeM6Ob3UJQQJ99ALACYeBjFXJ3w3AAALACOGpSJI"
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
@@ -39,18 +40,30 @@ const FileUploader = () => {
 
       if (result.documents && result.documents.length > 0) {
         const invoice = result.documents[0].fields;
+        console.log(invoice);
         const data = {
           invoiceNumber: invoice["InvoiceId"]?.value || "N/A",
           invoiceDate: invoice["InvoiceDate"]?.value
-            ? new Date(invoice["InvoiceDate"]?.value).toLocaleDateString()
+            ? new Date(invoice["InvoiceDate"]?.value).toLocaleDateString("en-GB")
             : "N/A",
+          // totalAmount: invoice["InvoiceTotal"]?.value
+          //   ? `${invoice["InvoiceTotal"].value?.currencySymbol} ${
+          //       invoice["InvoiceTotal"].value?.amount || ""
+          //     }`
+          //   : "N/A",
           totalAmount: invoice["InvoiceTotal"]?.value
-            ? `${invoice["InvoiceTotal"].value?.currencySymbol} ${
-                invoice["InvoiceTotal"].value?.amount || ""
-              }`
+            ? invoice["InvoiceTotal"].value?.amount || ""
             : "N/A",
-
+          customerId: invoice["CustomerId"]?.value || "N/A",
           customerName: invoice["CustomerName"]?.value || "N/A",
+          day: invoice["InvoiceDate"]?.value
+            ? (() => {
+                const date = new Date(invoice["InvoiceDate"]?.value);
+                const dayOfWeek = date.getDay();
+                const dayMapping = ["G", "A", "B", "C", "D", "E", "F"];
+                return dayMapping[dayOfWeek];
+              })()
+            : "N/A",
         };
 
         setExtractedData(data);
@@ -105,6 +118,12 @@ const FileUploader = () => {
           </p>
           <p>
             <strong>Customer Name:</strong> {extractedData.customerName}
+          </p>
+          <p>
+            <strong>Customer ID:</strong> {extractedData.customerId}
+          </p>
+          <p>
+            <strong>Day:</strong> {extractedData.day}
           </p>
           <QRCodeGenerator data={extractedData} />
         </div>
